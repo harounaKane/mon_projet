@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Accueil!{% endblock %}
+
+{% block body %}
+
+    <h2 class="text-center"> Liste des Articles </h2>
+
+    {% for art in articles %}
+        <a href="{{ path('app_art', {'id': art['id']}) }}">
+            {{ art['libelle'] }}
+        </a>
+    {% else %}
+        Pas d'article !
+    {% endfor %}
+
+{% endblock %}

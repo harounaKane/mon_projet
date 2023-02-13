@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Accueil!{% endblock %}
+
+{% block body %}
+
+    <h2 class="text-center"> Article </h2>
+
+    {% if article | length > 0 %}
+        <table class="table table-strepid">
+            <tr>
+                <th>ID</th>
+                <th>Libelle</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+            </tr>
+            <tr>
+                <td> {{ article['id'] }} </td>
+                <td> {{ article['libelle'] }} </td>
+                <td> {{ article['quantity'] }} </td>
+                <td> {{ article['prix'] }} </td>
+            </tr>
+        </table>
+    {% endif %} 
+
+{% endblock %}
