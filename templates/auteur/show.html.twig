@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AuteurController!{% endblock %}
+
+{% block body %}
+    <h2 class="text-center"> Auteur </h2>
+
+    <table class="table table-strepid">
+        <tr class="table-dark">
+            <th>ID</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Date</th>
+            <th>Statut</th>
+        </tr>
+        
+        <tr>
+            <td> {{ auteur.id }} </td>
+            <td> {{ auteur.prenom }} </td>
+            <td> {{ auteur.nom }} </td>
+            <td> {{ auteur.dateAjout | date('d/m/Y H:i:s') }} </td>
+            <td> {{ auteur.status }} </td>
+            
+        </tr>
+   
+    </table>
+{% endblock %}

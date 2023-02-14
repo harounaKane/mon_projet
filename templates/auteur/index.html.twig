@@ -5,9 +5,31 @@
 {% block body %}
     <h2 class="text-center"> Liste des Auteurs </h2>
 
-    {% for auteur in auteurs %}
-        {{ auteur }}
-    {% else %}
-        Pas d'auteur !
-    {% endfor %}
+    <table class="table table-strepid">
+        <tr class="table-dark">
+            <th>ID</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Action</th>
+        </tr>
+        {% for auteur in auteurs %}
+            <tr>
+                <td> {{ auteur.id }} </td>
+                <td> {{ auteur.prenom }} </td>
+                <td> {{ auteur.nom }} </td>
+                <td> {{ auteur.dateAjout | date('d/m/Y H:i:s') }} </td>
+                <td> {{ auteur.status }} </td>
+                <td> 
+                    <a href="{{ path('app_auteur_show', {'id': auteur.id}) }}">voir</a>
+                    <a href="{{ path('app_auteur_delete', {'id': auteur.id}) }}">supp</a>
+                </td>
+            </tr>
+        {% else %}
+            Pas d'auteur !
+        {% endfor %}
+    </table>
+    
+    
 {% endblock %}
