@@ -23,6 +23,13 @@
                 <a href="" class="btn btn-primary">Catégorie</a>
             </nav>
         </header>
+
+        <div class="w-100 text-center m-2">
+            {% for msg in app.flashes('success') %}
+                <div class="alert alert-success"> {{ msg }} </div>
+            {% endfor %}
+        </div>
+
         <main class="container-fluid">{% block body %}{% endblock %}</main>
     </body>
 </html>
