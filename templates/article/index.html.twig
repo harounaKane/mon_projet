@@ -1,17 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Accueil!{% endblock %}
+{% block title %}Article index{% endblock %}
 
 {% block body %}
+    <h1>Article index</h1>
 
-    <h2 class="text-center"> Liste des Articles </h2>
+    <a href="{{ path('app_article_new') }}" class="btn btn-success mb-3">Nouvel article</a>
 
-    {% for art in articles %}
-        <a href="{{ path('app_art', {'id': art['id']}) }}">
-            {{ art['libelle'] }}
-        </a>
-    {% else %}
-        Pas d'article !
-    {% endfor %}
+    <table class="table table-strepid">
+        <thead>
+            <tr class="table-dark">
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Contenu</th>
+                <th>Auteur</th>
+                <th>Catégory</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                    <td>{{ article.titre }}</td>
+                    <td>{{ article.contenu }}</td>
+                <td>{{ article.auteur }}</td>
+                <td> - </td>
+                <td>
+                    <a href="{{ path('app_article_show', {'id': article.id}) }}">show</a>
+                    <a href="{{ path('app_article_edit', {'id': article.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

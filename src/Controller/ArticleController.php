@@ -2,40 +2,86 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Form\ArticleType;
+use App\Repository\ArticleRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/article')]
 class ArticleController extends AbstractController
 {
-    #[Route('/', name: 'app_article')]
-    public function index(): Response
+    #[Route('/', name: 'app_article_index', methods: ['GET'])]
+    public function index(ArticleRepository $articleRepository): Response
     {
-        $articles = [
-            ["id" => 15, "libelle" => "Ordinateur", "prix" => 75, "quantity" => 80],
-            ["id" => 16, "libelle" => "clavier", "prix" => 5, "quantity" => 800]
-        ];
-   
         return $this->render('article/index.html.twig', [
-            "articles" => $articles
+            'articles' => $articleRepository->findAll(),
         ]);
     }
 
-    #[Route('/article/{id}', name: 'app_art')]
-    public function article($id){
-        $articles = [
-            ["id" => 15, "libelle" => "Ordinateur", "prix" => 75, "quantity" => 80],
-            ["id" => 16, "libelle" => "clavier", "prix" => 5, "quantity" => 800]
-        ];
+    #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, ArticleRepository $articleRepository): Response
+    {
+        $article = new Article();
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
 
-        $art = [];
-        
-        foreach($articles as $key => $article){
-            if($id == $article['id']){
-                $art = $article;
+        if ($form->isSubmitted() && $form->isValid()) {
+            try{
+                $articleRepository->save($article, true);
+    
+                $this->addFlash("success", "Article ajouté avec succès !");
+
+                return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+
+            }catch(UniqueConstraintViolationException $e){
+                $this->addFlash("error", "Cet article " . $article->getTitre() ." existe déjà ");
             }
+
         }
 
-        return $this->render('article/show.html.twig', ["article" => $art]);
+        return $this->renderForm('article/new.html.twig', [
+            'article' => $article,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
+    public function show(Article $article): Response
+    {
+        return $this->render('article/show.html.twig', [
+            'article' => $article,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_article_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Article $article, ArticleRepository $articleRepository): Response
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $articleRepository->save($article, true);
+
+            return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('article/edit.html.twig', [
+            'article' => $article,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_article_delete', methods: ['POST'])]
+    public function delete(Request $request, Article $article, ArticleRepository $articleRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+            $articleRepository->remove($article, true);
+        }
+
+        return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
     }
 }
